@@ -1,0 +1,97 @@
+.chatbot-container {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  border-radius: 20px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.chat-window {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 300px;
+  height: 400px;
+  background-color: #fff;
+  border-radius: 20px 20px 0px 0px;
+}
+
+.chat-header {
+  display: flex;
+  gap: 10px;
+  justify-content: end;
+  padding: 5px 10px;
+  border-radius: 20px 20px 0px 0px;
+  background: linear-gradient(
+    90deg,
+    rgb(0, 183, 79) 0px,
+    rgb(29, 66, 137) 100%
+  );
+}
+
+.chat-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto; /* Enable scrolling for long messages */
+  height: 300px; /* Restrict height */
+}
+
+.chat-footer {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.chat-message {
+  max-width: 70%; /* Limit message width */
+  padding: 10px;
+  border-radius: 10px;
+  word-wrap: break-word;
+}
+.user-message {
+  align-self: flex-end;
+  background-color: #daf5d5; /* Light green */
+  color: #333;
+  border-radius: 10px 0 10px 10px;
+}
+
+/* Bot Message */
+.bot-message {
+  align-self: flex-start;
+  background-color: #f0f0f0; /* Light gray */
+  color: #333;
+  border-radius: 0 10px 10px 10px;
+}
+.chat-input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.chat-button {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.input-container {
+  display: flex;
+  gap: 10px;
+}
+
+.open-chat-button {
+  min-width: 100px;
+  min-height: 100px;
+  background-image: url("https://trolyao.vpbank.com.vn/images/vp-logo-2.png");
+  background-size: contain; /* Ensures the image covers the button properly */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  cursor: pointer; /* Changes cursor to pointer when hovered */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for interaction effects */
+}
