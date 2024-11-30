@@ -19,7 +19,7 @@ class MoviesSlider extends StatelessWidget {
         autoPlay: true, // Tự động chạy slide
         enlargeCenterPage: true, // Phóng to slide trung tâm
         aspectRatio: 16 / 9, // Tỷ lệ khung hình
-        viewportFraction: 0.6, // Tỷ lệ phần tử trên viewport
+        viewportFraction: 0.5, // Tỷ lệ phần tử trên viewport
       ),
       items: movie.map((element) {
         return Builder(

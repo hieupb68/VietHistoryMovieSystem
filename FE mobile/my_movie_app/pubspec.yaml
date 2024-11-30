@@ -33,7 +33,7 @@ dependencies:
   get: ^4.6.6
   flutter_svg: ^2.0.7
   shared_preferences: any
-  share_plus: ^7.2.1
+#  share_plus: any
   url_launcher: ^6.2.3
   carousel_slider: ^5.0.0
   video_player: ^2.9.2

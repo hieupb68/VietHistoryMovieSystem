@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_movie_app/appRouter.dart';
 import 'package:my_movie_app/shareController.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:my_movie_app/core/utils/dialog_rate.dart';
 
@@ -112,8 +111,8 @@ class ProfilePage extends GetView {
                     ),
                     const Divider(),
                     InkWell(
-                      onTap: () async => await Share.share(
-                          "https://pub.dev/packages/share_plus"),
+                      // onTap: () async => await Share.share(
+                      //     "https://pub.dev/packages/share_plus"),
                       child: SettingItem(
                         label: 'share'.tr,
                         leadingAsset: "assets/svg/share.svg",

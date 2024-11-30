@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:my_movie_app/models/movie.dart';
 
 class ApiService {
-  static const String baseUrl = "http://localhost:8080/api";
+  static const String baseUrl = "http://192.168.229.1:8080/api";
 
   // Đăng ký tài khoản mới
   static Future<bool> register(String username, String password) async {
@@ -95,14 +95,19 @@ class ApiService {
   }
 
   // Lấy tất cả phim
+
   static Future<List<Movie>> getAllMovies() async {
     try {
-      final url = Uri.parse("$baseUrl/movies");
+      final url = Uri.parse("$baseUrl/movie/getAll");
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final List<dynamic> jsonData = jsonDecode(response.body);
-        return jsonData.map((json) => Movie.fromJson(json)).toList();
+        final decodedData = utf8.decode(response.bodyBytes);
+        final data=  jsonDecode(decodedData);
+        List<dynamic> content =data;
+
+        // Chuyển đổi từng phần tử trong `content` thành đối tượng `Movie`
+        return content.map((movieJson) => Movie.fromJson(movieJson)).toList();
       } else {
         throw Exception('Failed to load movies: ${response.statusCode}');
       }

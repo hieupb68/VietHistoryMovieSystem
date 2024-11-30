@@ -14,10 +14,10 @@ class HomeNavController extends GetxController{
   Future<void> onInit() async {
     super.onInit();
     // get all movie
-    // List<Movie> movieResponse = await ApiService.getAllMovies();
-    // movies.addAll(movieResponse) ;
-    // newMovies.value = getNewMovies(movies.value);
-    // randomMovies.value = getRandomMovies(movies);
+    List<Movie> movieResponse = await ApiService.getAllMovies();
+    movies.addAll(movieResponse) ;
+    newMovies.value = getNewMovies(movies.value);
+    randomMovies.value = getRandomMovies(movies);
 
 
 

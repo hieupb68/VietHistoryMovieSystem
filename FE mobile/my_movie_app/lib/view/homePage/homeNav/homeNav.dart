@@ -22,7 +22,7 @@ class HomeNavPage extends GetWidget {
                 SizedBox(height: 16,),
                  Text('new_movies'.tr,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                 const SizedBox(height: 16,),
-                MoviesSlider(movie: homeNavController.movies),
+                MoviesSlider(movie: homeNavController.newMovies),
                 const SizedBox(height: 16,),
                  Text('random_movies'.tr,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                 const SizedBox(height: 16,),
@@ -30,7 +30,7 @@ class HomeNavPage extends GetWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      ...homeNavController.movies.map((e) =>
+                      ...homeNavController.randomMovies.map((e) =>
                       MovieItem(imageUrl: e.image, name: e.title, year: e.year, onTap: (){
                          Get.toNamed(AppRouter.MOVIE_DETAIL_PAGE, arguments: e);
                       })
