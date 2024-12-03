@@ -32,7 +32,19 @@ class MoviesSlider extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12), // Bo góc ảnh
                 child: Image.network(
                   element.image,
-                  fit: BoxFit.cover, // Ảnh bao phủ hết vùng
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'assets/image/no_image.png',
+                      fit: BoxFit.fill,
+                      height: 212,
+                      width: 170,
+                    );
+                  },// Ảnh bao phủ hết vùng
                   // width: MediaQuery.of(context).size.width, // Độ rộng của ảnh
                 ),
               ),

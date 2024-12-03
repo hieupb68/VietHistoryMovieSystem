@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:get/get.dart';
 import 'package:my_movie_app/comon/widget/textfield_custom.dart';
 import 'package:my_movie_app/view/chat/chatController.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -13,6 +15,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   final TextEditingController messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   void initState() {
@@ -102,10 +112,18 @@ class _ChatScreenState extends State<ChatScreen> {
                                         : Colors.green[100],
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Text(
-                                    message,
-                                    style: const TextStyle(fontSize: 16),
+                                  child:  Linkify(
+                                    onOpen: (link) {
+                                      _launchURL(link.url); // Khi bấm vào link sẽ mở trình duyệt
+                                    },
+                                    text: message, // Văn bản chứa URL
+                                    style: TextStyle(fontSize: 16, color: Colors.black),
+                                    linkStyle: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
                                   ),
+                                  // Text(
+                                  //   message,
+                                  //   style: const TextStyle(fontSize: 16),
+                                  // ),
                                 ),
                               );
                             },

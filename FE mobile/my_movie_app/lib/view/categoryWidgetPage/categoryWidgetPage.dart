@@ -4,45 +4,56 @@ import 'package:my_movie_app/appRouter.dart';
 import 'package:my_movie_app/comon/widget/movieItem.dart';
 import 'package:my_movie_app/view/categoryWidgetPage/categoryWidgetController.dart';
 
-
 class CategoryWidgetPage extends StatefulWidget {
   final int indexPage;
-  const CategoryWidgetPage({super.key,required this.indexPage});
+
+  const CategoryWidgetPage({Key? key, required this.indexPage}) : super(key: key);
 
   @override
   State<CategoryWidgetPage> createState() => _CategoryWidgetPageState();
 }
-final CategoryWidgetController categoryWidgetController = Get.put(CategoryWidgetController());
+
 class _CategoryWidgetPageState extends State<CategoryWidgetPage> {
-
-
+  final CategoryWidgetController categoryWidgetController = Get.put(CategoryWidgetController());
 
   @override
   void initState() {
     super.initState();
-    categoryWidgetController.init(widget.indexPage);
+    categoryWidgetController.init(widget.indexPage); // Khởi tạo dữ liệu cho trang
   }
+
   @override
   Widget build(BuildContext context) {
-    final CategoryWidgetController categoryController = Get.put(CategoryWidgetController());
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: GridView.count(
-          crossAxisCount: 2, // Số cột trong một hàng
-          crossAxisSpacing: 10, // Khoảng cách giữa các cột
-          mainAxisSpacing: 10, // Khoảng cách giữa các hàng
-          padding: const EdgeInsets.all(10),
-          childAspectRatio: 170/340,
-          children: [
-            ...categoryController.movies.map((e) =>
-                MovieItem(imageUrl: e.image, name: e.title, year: e.year, onTap: (){
-                  Get.toNamed(AppRouter.MOVIE_DETAIL_PAGE, arguments: e);
-                })),
-          ],
+      body: Obx(
+            () => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: categoryWidgetController.movies.isNotEmpty
+              ? GridView.builder(
+            itemCount: categoryWidgetController.movies.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, // Số cột trong một hàng
+              crossAxisSpacing: 8.0, // Khoảng cách giữa các cột
+              mainAxisSpacing: 2.0, // Khoảng cách giữa các hàng
+              childAspectRatio: 0.6, // Tỉ lệ khung hình (width/height)
+            ),
+            itemBuilder: (context, index) {
+              final movie = categoryWidgetController.movies[index];
+              return MovieItem(
+                imageUrl: movie.image,
+                name: movie.title,
+                year: movie.year,
+                onTap: () {
+                  Get.toNamed(AppRouter.MOVIE_DETAIL_PAGE, arguments: movie);
+                },
+              );
+            },
+          )
+              : const Center(
+            child: CircularProgressIndicator(), // Hiển thị vòng tròn tải khi không có dữ liệu
+          ),
         ),
       ),
     );
   }
 }
-

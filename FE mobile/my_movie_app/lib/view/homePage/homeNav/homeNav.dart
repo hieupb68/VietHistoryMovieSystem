@@ -15,41 +15,41 @@ class HomeNavPage extends GetWidget {
         body: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
 
-          child: SingleChildScrollView(
+          child:Obx(()=>  SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 16,),
-                 Text('new_movies'.tr,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                const SizedBox(height: 16,),
+                Text('new_movies'.tr,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                 const SizedBox(height: 16,),
                 MoviesSlider(movie: homeNavController.newMovies),
                 const SizedBox(height: 16,),
-                 Text('random_movies'.tr,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                Text('random_movies'.tr,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                 const SizedBox(height: 16,),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
                       ...homeNavController.randomMovies.map((e) =>
-                      MovieItem(imageUrl: e.image, name: e.title, year: e.year, onTap: (){
-                         Get.toNamed(AppRouter.MOVIE_DETAIL_PAGE, arguments: e);
-                      })
+                          MovieItem(imageUrl: e.image, name: e.title, year: e.year, onTap: (){
+                            Get.toNamed(AppRouter.MOVIE_DETAIL_PAGE, arguments: e);
+                          })
                       ),
 
                     ],
                   ),
                 ),
                 const SizedBox(height: 16,),
-                 Text('life'.tr,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                Text('life'.tr,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                 const SizedBox(height: 16,),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
                       ...homeNavController.movies.map((e) =>
-                      MovieItem(imageUrl: e.image, name: e.title, year: e.year, onTap: (){
+                          MovieItem(imageUrl: e.image, name: e.title, year: e.year, onTap: (){
 
-                      })
+                          })
                       ),
 
                     ],
@@ -58,7 +58,7 @@ class HomeNavPage extends GetWidget {
 
               ],
             ),
-          ),
+          ),),
         ),
       );
   }

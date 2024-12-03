@@ -46,7 +46,9 @@ class MyTranslations extends Translations {
       'life': 'Life',
       'document': 'Document',
       "new_movies": "New Movies",
-      "random_movies": "Random Movies"
+      "random_movies": "Random Movies",
+      "search_movie": "Enter the movie you want to find",
+      "movie_not_found": "No movies found for your search"
 
     },
     'vi_VN': {
@@ -92,7 +94,9 @@ class MyTranslations extends Translations {
       'life': 'Đời sống',
       'document': 'Tư liệu',
       "new_movies": "Phim mới",
-      "random_movies": "Phim ngẫu nhiên"
+      "random_movies": "Phim ngẫu nhiên",
+      "search_movie": "Hãy nhập bộ phim mà bạn muốn tìm",
+      "movie_not_found": "Không tìm thấy bộ phim nào mà bạn muốn"
     },
   };
 }

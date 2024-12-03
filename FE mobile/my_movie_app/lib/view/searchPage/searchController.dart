@@ -2,26 +2,29 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:my_movie_app/comon/data/data_page_response.dart';
 import 'package:my_movie_app/core/service/api_service.dart';
 import 'package:my_movie_app/models/movie.dart';
 
 class SearchMovieController extends GetxController {
   TextEditingController textcontroller = TextEditingController();
   var movies = <Movie>[].obs;
+  RxBool isInit = true.obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-
-    // Chuyển đổi JSON thành danh sách đối tượng Movie
-    List<dynamic> jsonList = jsonDecode(jsonData);
-
-    // Chuyển đổi danh sách json thành List<Movie>
-    movies.value = jsonList.map((json) => Movie.fromJson(json)).toList();
 
   }
   Future<void> search()async {
-    movies.value = await ApiService.searchMovies(textcontroller.text);
+
+    isInit.value = false;
+    BasePageData<Movie> basePageData = await ApiService.searchMovies(textcontroller.text);
+    movies.value = basePageData.content;
+  }
+  Future<void> clear()async {
+    textcontroller.text = '';
+    movies.value = [];
   }
 
   String jsonData = '''

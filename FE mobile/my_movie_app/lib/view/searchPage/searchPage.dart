@@ -18,48 +18,70 @@ class Searchpage extends GetWidget {
               height: 40,
               child: Row(
                 children: [
-                  const Icon(Icons.close),
+                  InkWell( onTap: searchController.clear,
+                      child: const Icon(Icons.close)),
                   const SizedBox(
-                    width: 16,
+                    width: 8,
                   ),
                   Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(24)),
-                            border: Border.all(color: Get.isDarkMode? Colors.white: Colors.black)),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 2
-                        ),
-                        child: TextField(
-                          controller: searchController.textcontroller,
-                          decoration:   InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'enter_movie_to_search'.tr,
-                          ),
-                        ),
+                      child: Stack(
+                        alignment: Alignment.centerRight,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(Radius.circular(24)),
+                                border: Border.all(color: Get.isDarkMode? Colors.white: Colors.black)),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 2
+                            ),
+                            child: TextField(
+                              controller: searchController.textcontroller,
+                              decoration:   InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'enter_movie_to_search'.tr,
+                              ),
+                            ),
 
+                          ),
+                          InkWell(
+                            onTap: searchController.search        ,
+                            child: Padding(
+                              padding: const EdgeInsets.only( right: 16.0),
+                              child: const Icon(Icons.search),
+                            ),
+                          )
+                        ],
                       )),
                   const SizedBox(
-                    width: 16,
+                    width: 24,
                   ),
-                  const Icon(Icons.search)
+
                 ],
               ),
             ),
             const SizedBox(height: 16,),
-            Expanded(child: GridView.count(
-              crossAxisCount: 2, // Số cột trong một hàng
-              crossAxisSpacing: 10, // Khoảng cách giữa các cột
-              mainAxisSpacing: 10, // Khoảng cách giữa các hàng
-              padding: const EdgeInsets.all(10),
-              childAspectRatio: 170/340,
-              children: [
-                ...searchController.movies.map((e) =>
-                    MovieItem(imageUrl: e.image, name: e.title, year: e.year, onTap: (){
-                      Get.toNamed(AppRouter.MOVIE_DETAIL_PAGE, arguments: e);
-                    })),
-              ],
+            Expanded(child: Obx(()=>
+               searchController.movies.value.isNotEmpty? GridView.builder(
+                 itemCount: searchController.movies.length,
+                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                   crossAxisCount: 3, // Số cột trong một hàng
+                   crossAxisSpacing: 8.0, // Khoảng cách giữa các cột
+                   mainAxisSpacing: 2.0, // Khoảng cách giữa các hàng
+                   childAspectRatio: 0.6, // Tỉ lệ khung hình (width/height)
+                 ),
+                 itemBuilder: (context, index) {
+                   final movie = searchController.movies[index];
+                   return MovieItem(
+                     imageUrl: movie.image,
+                     name: movie.title,
+                     year: movie.year,
+                     onTap: () {
+                       Get.toNamed(AppRouter.MOVIE_DETAIL_PAGE, arguments: movie);
+                     },
+                   );
+                 },
+               ): Center(child: Text( searchController.isInit.value ?'search_movie'.tr : 'movie_not_found'.tr),)
             ),)
           ],
         ),

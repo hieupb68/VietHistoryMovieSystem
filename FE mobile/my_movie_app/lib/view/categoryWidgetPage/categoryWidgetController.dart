@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:my_movie_app/comon/data/data_page_response.dart';
 import 'package:my_movie_app/core/service/api_service.dart';
 import 'package:my_movie_app/models/movie.dart';
 
@@ -17,13 +18,14 @@ class CategoryWidgetController extends GetxController {
     super.onInit();
 
     // Chuyển đổi JSON thành danh sách đối tượng Movie
-    List<dynamic> jsonList = jsonDecode(jsonData);
-    // Chuyển đổi danh sách json thành List<Movie>
-    movies.value = jsonList.map((json) => Movie.fromJson(json)).toList();
+    // List<dynamic> jsonList = jsonDecode(jsonData);
+    // // Chuyển đổi danh sách json thành List<Movie>
+    // movies.value = jsonList.map((json) => Movie.fromJson(json)).toList();
   }
   Future<void> init(int indexPage)async{
     indexTab.value = indexPage;
-    // moviesTab.value = await ApiService.fetchMoviesByType(indexPage);
+   BasePageData<Movie> basePageData = await ApiService.fetchMoviesByType(indexPage,page: 1);
+   movies.value = basePageData.content;
     //get data by index
   }
 

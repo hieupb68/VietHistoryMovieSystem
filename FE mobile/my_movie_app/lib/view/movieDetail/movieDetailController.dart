@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:my_movie_app/core/service/api_service.dart';
 import 'package:my_movie_app/core/service/hive_service.dart';
+import 'package:my_movie_app/models/feedback.dart';
 import 'package:my_movie_app/models/movie.dart';
 import 'package:video_player/video_player.dart';
 
@@ -11,6 +14,7 @@ class MovieDetailController extends GetxController {
   RxInt star = 4.obs;
   RxBool isFavourite = false.obs;
   final Movie movie = Get.arguments as Movie;
+  RxList<FeedbackModel> feedback = <FeedbackModel>[].obs;
 
 
   // final Movie movie; // Thông tin phim
@@ -25,6 +29,7 @@ class MovieDetailController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     isFavourite.value = hiveService.isFavorite(movie.id);
+    feedback.value = await ApiService.getFeedbackForMovie(movie.id);
 
   }
   Future<void> changedStar(int starChange)async {

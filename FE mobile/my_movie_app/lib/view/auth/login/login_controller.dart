@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:my_movie_app/appRouter.dart';
 import 'package:my_movie_app/core/service/api_service.dart';
 import 'package:my_movie_app/core/utils/common_dialog.dart';
+import 'package:my_movie_app/models/feedback.dart';
 import 'package:my_movie_app/shareController.dart';
 
 class LoginController extends GetxController {
@@ -23,15 +24,6 @@ class LoginController extends GetxController {
       );
       return;
     }
-
-    if (password.length < 6) {
-      CommonDialog.showErrorDialog(
-        'Validation Error',
-        'Password must be at least 6 characters long.',
-      );
-      return;
-    }
-
     // Call API or handle login logic here
     try {
       // Simulate API call or login process
@@ -39,7 +31,7 @@ class LoginController extends GetxController {
 
       if (isLoginSuccessful) {
         // Navigate to home screen or do something
-        shareController.saveLogin(userName);
+
         Get.offAllNamed(AppRouter.HOME_PAGE); // Replace '/home' with your route
       } else {
         CommonDialog.showErrorDialog(
@@ -56,7 +48,14 @@ class LoginController extends GetxController {
     }
   }
   Future<bool> loginApi(String userName, String password) async {
-    return await ApiService.login(userName, password);
+    User? user = await ApiService.login(userName, password);
+    if(user == null){
+      return false;
+    }
+    else{
+      shareController.saveLogin(user);
+      return true;
+    }
 
   }
 

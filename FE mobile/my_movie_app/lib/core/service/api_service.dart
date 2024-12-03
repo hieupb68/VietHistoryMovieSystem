@@ -1,98 +1,71 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:my_movie_app/comon/data/data_page_response.dart';
+import 'package:my_movie_app/models/feedback.dart';
 import 'package:my_movie_app/models/movie.dart';
 
 class ApiService {
   static const String baseUrl = "http://192.168.229.1:8080/api";
 
-  // Đăng ký tài khoản mới
-  static Future<bool> register(String username, String password) async {
-    try {
-      final url = Uri.parse("$baseUrl/auth/register");
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'username': username, 'password': password}),
-      );
-      return response as bool ?? false;
-    } catch (e) {
-      throw Exception('Failed to register: $e');
-    }
-  }
+  // // Register a new account
+  // static Future<bool> register(String username, String password) async {
+  //   try {
+  //     final url = Uri.parse("$baseUrl/auth/register");
+  //     final response = await http.post(
+  //       url,
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: jsonEncode({'username': username, 'password': password}),
+  //     );
+  //     return response.statusCode == 200;
+  //   } catch (e) {
+  //     throw Exception('Failed to register: $e');
+  //   }
+  // }
 
-  // Xóa tài khoản
-  static Future<http.Response> deleteUser(String id) async {
+  // Delete a user
+  static Future<void> deleteUser(String id) async {
     try {
       final url = Uri.parse("$baseUrl/auth/delete/$id");
       final response = await http.delete(url);
-      return response;
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to delete user: ${response.statusCode}');
+      }
     } catch (e) {
       throw Exception('Failed to delete user: $e');
     }
   }
 
-  // Lấy thông tin tài khoản
-  static Future<http.Response> getUser() async {
+  // Get user information
+  static Future<Map<String, dynamic>> getUser() async {
     try {
       final url = Uri.parse("$baseUrl/auth/user");
       final response = await http.get(url);
-      return response;
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to get user: ${response.statusCode}');
+      }
     } catch (e) {
       throw Exception('Failed to get user: $e');
     }
   }
-
-  // Đăng nhập
-  static Future<bool> login(String username, String password) async {
-    try {
-      // final url = Uri.parse("$baseUrl/auth/login");
-      // final response = await http.post(
-      //   url,
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: jsonEncode({'username': username, 'password': password}),
-      // );
-      return true;
-    } catch (e) {
-      throw Exception('Failed to login: $e');
-    }
-  }
-
-  // Đăng nhập với Google
-  static Future<http.Response> loginWithGoogle(String token) async {
-    try {
-      final url = Uri.parse("$baseUrl/auth/login/google");
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'token': token}),
-      );
-      return response;
-    } catch (e) {
-      throw Exception('Failed to login with Google: $e');
-    }
-  }
-
-  // Thêm phim mới
-  static Future<http.Response> addMovie(
-      String title, String description, String genre, String director, int year) async {
-    try {
-      final url = Uri.parse("$baseUrl/movies");
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'title': title,
-          'description': description,
-          'genre': genre,
-          'director': director,
-          'year': year,
-        }),
-      );
-      return response;
-    } catch (e) {
-      throw Exception('Failed to add movie: $e');
-    }
-  }
+  //
+  // // Login
+  // static Future<bool> login(String username, String password) async {
+  //   try {
+  //     final url = Uri.parse("$baseUrl/auth/login");
+  //     final response = await http.post(
+  //       url,
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: jsonEncode({'username': username, 'password': password}),
+  //     );
+  //     return response.statusCode == 200;
+  //   } catch (e) {
+  //     throw Exception('Failed to login: $e');
+  //   }
+  // }
 
   // Lấy tất cả phim
 
@@ -102,12 +75,10 @@ class ApiService {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final decodedData = utf8.decode(response.bodyBytes);
-        final data=  jsonDecode(decodedData);
-        List<dynamic> content =data;
+        final decodedBody = utf8.decode(response.bodyBytes);
+        final jsonData = jsonDecode(decodedBody) as List<dynamic>;
 
-        // Chuyển đổi từng phần tử trong `content` thành đối tượng `Movie`
-        return content.map((movieJson) => Movie.fromJson(movieJson)).toList();
+        return jsonData.map((movieJson) => Movie.fromJson(movieJson)).toList();
       } else {
         throw Exception('Failed to load movies: ${response.statusCode}');
       }
@@ -116,104 +87,151 @@ class ApiService {
     }
   }
 
-  // Lấy phim theo ID
+  // Fetch movies by type with pagination
+  static Future<BasePageData<Movie>> fetchMoviesByType(int typeId, {int page = 0, int size = 10}) async {
+    try {
+      final url = Uri.parse("$baseUrl/movie/get?typeId=$typeId&page=$page&size=$size");
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        return BasePageData<Movie>.fromJson(
+          jsonData,
+              (item) => Movie.fromJson(item),
+        );
+      } else {
+        throw Exception('Failed to fetch movies by type: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching movies by type: $e');
+    }
+  }
+
+  // Get movie by ID
   static Future<Movie> getMovieById(String id) async {
     try {
       final url = Uri.parse("$baseUrl/movies/$id");
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        final jsonData = jsonDecode(response.body);
         return Movie.fromJson(jsonData);
       } else {
-        throw Exception('Failed to load movie: ${response.statusCode}');
+        throw Exception('Failed to fetch movie by ID: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Failed to load movie: $e');
+      throw Exception('Failed to fetch movie by ID: $e');
     }
   }
 
-  // Thêm loại phim mới
-  static Future<http.Response> addType(String name) async {
+  // Search movies with pagination
+  static Future<BasePageData<Movie>> searchMovies(String keyword, {int page = 1, int size = 12}) async {
     try {
-      final url = Uri.parse("$baseUrl/types");
+      final url = Uri.parse("$baseUrl/movie/get?keyword=$keyword&page=$page&size=$size");
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        return BasePageData<Movie>.fromJson(
+          jsonData,
+              (item) => Movie.fromJson(item),
+        );
+      } else {
+        throw Exception('Failed to search movies: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error searching movies: $e');
+    }
+  }
+
+  ///
+  static Future<List<FeedbackModel>> getFeedbackForMovie(int filmId) async {
+    final response = await http.get(Uri.parse('$baseUrl/feedback/get?filmId=$filmId'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> feedbackJson = json.decode(response.body);
+      // Map the JSON data to a list of Feedback objects
+      return feedbackJson.map((feedback) => FeedbackModel.fromJson(feedback)).toList()??[];
+    } else {
+      throw Exception('Failed to load feedback');
+    }
+  }
+
+  static Future<String> getResponse(String userMessage) async {
+    final url = Uri.parse('http://192.168.229.1:8000/response');
+
+    // The body of the requesthi
+    final body = jsonEncode({
+      'messages': [
+        {
+          'role': 'user',
+          'content': userMessage,
+        }
+      ]
+    });
+
+    // Sending the POST request
+    try {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'name': name}),
+        body: body,
       );
-      return response;
-    } catch (e) {
-      throw Exception('Failed to add type: $e');
-    }
-  }
 
-  // Lấy tất cả loại phim
-  static Future<http.Response> getAllTypes() async {
-    try {
-      final url = Uri.parse("$baseUrl/types");
-      final response = await http.get(url);
-      return response;
-    } catch (e) {
-      throw Exception('Failed to get all types: $e');
-    }
-  }
-
-  // Thêm phản hồi mới
-  static Future<http.Response> addFeedback(String filmId, String content) async {
-    try {
-      final url = Uri.parse("$baseUrl/feedbacks");
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'filmId': filmId, 'content': content}),
-      );
-      return response;
-    } catch (e) {
-      throw Exception('Failed to add feedback: $e');
-    }
-  }
-
-  // Lấy phản hồi theo ID phim
-  static Future<http.Response> getFeedbackByFilmId(String filmId) async {
-    try {
-      final url = Uri.parse("$baseUrl/feedbacks/$filmId");
-      final response = await http.get(url);
-      return response;
-    } catch (e) {
-      throw Exception('Failed to get feedback by film ID: $e');
-    }
-  }
-  static Future<List<Movie>> searchMovies(String keyword) async {
-    final url = Uri.parse('http://localhost:8080/api/movie/get?keyword=$keyword');
-
-    try {
-      final response = await http.get(url);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final List<dynamic> moviesJson = data['content'];
-        return moviesJson.map((json) => Movie.fromJson(json)).toList();
+        // If the server responds with a 200 OK, parse the response
+        final responseData = jsonDecode(response.body);
+        // Return the assistant message from the response
+        return responseData['assistant_message'];
       } else {
-        throw Exception('Failed to fetch movies: ${response.statusCode}');
+        // If the server doesn't respond with 200, throw an error
+        throw Exception('Failed to load response');
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      return 'Error: $error';
+    }
+  }
+
+  // Login API
+  static Future<User?> login(String username, String password) async {
+    final url = Uri.parse("$baseUrl/authen/login");
+    final headers = {"Content-Type": "application/json"};
+    final body = json.encode({"username": username, "password": password});
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final userData = responseData['user'];
+        return User.fromJson(userData);
+      } else {
+        return null;
+        // throw Exception("Login failed: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception('Error fetching movies: $e');
+      throw Exception("Failed to login: $e");
     }
   }
-  static Future<List<Movie>> fetchMoviesByType(int typeId) async {
-    final url = Uri.parse('http://localhost:8080/api/movie/get?typeId=$typeId');
+
+  static Future<bool> register(String username, String password) async {
+    final url = Uri.parse("$baseUrl/authen/register");
+    final headers = {
+      "Content-Type": "application/json",
+    };
+    final body = json.encode({"username": username, "password": password});
 
     try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final List<dynamic> moviesJson = data['content'];
-        return moviesJson.map((json) => Movie.fromJson(json)).toList();
+      final response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true; // Success
       } else {
-        throw Exception('Failed to fetch movies: ${response.statusCode}');
+        print("Register failed: ${response.statusCode}");
+        return false; // Failed
       }
     } catch (e) {
-      throw Exception('Error fetching movies: $e');
+      print("Failed to register: $e");
+      return false; // Error occurred
     }
   }
 }
