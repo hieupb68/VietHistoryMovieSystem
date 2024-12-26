@@ -150,7 +150,7 @@ const Header = () => {
             <div
               key={type.id}
               className={classNames(
-                "p-4 uppercase hover:bg-slate-300 rounded-md cursor-pointer",
+                "p-4 uppercase hover:bg-slate-300 rounded-md cursor-pointer lg:text-base text-xs",
                 darkMode && "hover:text-black",
                 isActive === type.id && "bg-slate-300 text-black"
               )}

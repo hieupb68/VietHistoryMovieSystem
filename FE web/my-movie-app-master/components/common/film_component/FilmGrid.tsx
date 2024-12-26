@@ -14,11 +14,11 @@ const FilmGrid: React.FC<FilmGridProps> = ({ films, darkMode, handleDetailsClick
     <>
       <Typography
         variant="h4"
-        className="text-blue-600 pb-6 font-bold border-t-[2px] border-blue-500"
+        className="text-blue-600 pb-6 font-bold border-t-[2px] border-blue-500 px-5"
       >
         Phim nổi bật
       </Typography>
-      <Grid container spacing={4}>
+      <Grid className="px-5" container spacing={4}>
         {films.map((film, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Card
@@ -40,7 +40,7 @@ const FilmGrid: React.FC<FilmGridProps> = ({ films, darkMode, handleDetailsClick
                 <Typography variant="h6" className="font-bold mb-2">
                   {film.title}
                 </Typography>
-                <Typography variant="subtitle1" className="mb-1">
+                <Typography variant="subtitle1" className="mb-1 truncate">
                   Đạo diễn: {film.director}
                 </Typography>
                 <Typography variant="subtitle2" className="mb-2">

@@ -13,6 +13,7 @@ const FilmPagination: React.FC<FilmPaginationProps> = ({ totalPages, page, darkM
   return (
     <Box
       mt={4}
+      mb={4}
       display="flex"
       justifyContent="center"
       className={classNames(darkMode ? "text-white" : "")}
