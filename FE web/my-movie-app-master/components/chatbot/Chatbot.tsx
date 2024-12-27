@@ -5,7 +5,7 @@ interface ChatbotProps {
 }
 
 const Chatbot: React.FC<ChatbotProps> = () => {
-  const CHARACTERS_IN_LINE = 24;
+  const CHARACTERS_IN_LINE = 32;
   const [showChat, setShowChat] = useState(false);
   const [messages, setMessages] = useState<
     { text: string; sender: string; timestamp: number }[]
@@ -45,18 +45,6 @@ const Chatbot: React.FC<ChatbotProps> = () => {
     }, 1000); // 1-second delay
   };
 
-  const formateMessage = (str : String) => {
-
-    let formatText = "";
-    for (let i = 0; i < str.length; i++) {
-      formatText += str[i];
-      if ((i + 1) % CHARACTERS_IN_LINE === 0 && i >= CHARACTERS_IN_LINE - 1) {
-        formatText += '\n';
-      }
-    }
-    return formatText;
-  }
-
   return (
     <div className="chatbot-container">
       {/* Open Chat Button */}
@@ -83,11 +71,11 @@ const Chatbot: React.FC<ChatbotProps> = () => {
               {messages.map((message, index) => (
                 <p
                   key={index}
-                  className={`message px-[15px] py-[5px] max-w-[240px] ${
+                  className={`px-[15px] py-[5px] ${
                     message.sender === "user" ? "user-message" : "bot-message"
                   }`}
-                >
-                  {formateMessage(message.text)}
+                > 
+                {message.text}
                 </p>
               ))}
           </div>
